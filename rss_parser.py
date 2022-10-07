@@ -4,9 +4,10 @@
 Масштабирование за счет добавление новых ролей с указанием тематических каналов.
 """
 
-# TODO описать функционал
+# TODO описать функции
 # TODO сделать кодревью
 # TODO добавить выгрузку за врменной период
+# TODO уйти от необходмиости два раза указывать наименования колонок
 
 
 import feedparser
@@ -20,8 +21,9 @@ RSS_FILENAME = DATASET_PATH + "rss_dataset.csv"
 
 class ParseRSS():
     # заголовок
-    def __init__(self, roles_rss_feeds):
+    def __init__(self, roles_rss_feeds, is_log=True):
         self.roles_rss_feeds = roles_rss_feeds
+        self.is_log = is_log
 
     def parse_feeds(self):
         roles = []
@@ -33,9 +35,11 @@ class ParseRSS():
         published_dt = []
 
         for role_name, rss_feeds in self.roles_rss_feeds.items():
-            print(role_name)
+            if self.is_log:
+                print(role_name)
             for url in rss_feeds:
-                print(url)
+                if self.is_log:
+                    print(url)
                 lenta = feedparser.parse(url)
                 for item_news in lenta['items']:
                     roles.append(role_name)
@@ -56,7 +60,7 @@ class ParseRSS():
         'title', 'tags', 'summary', 'description', 'link', 'published_dt' - атрибуты rss ленты
         """
         df = pd.DataFrame.from_dict(feeds)
-        df.to_csv(RSS_FILENAME, sep=";", encoding="utf-8-sig", header=True, index=True)
+        df.to_csv(RSS_FILENAME, sep=";", encoding="utf-8-sig", header=True, index=True, index_label="id")
         return RSS_FILENAME
 
 
