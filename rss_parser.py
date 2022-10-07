@@ -2,7 +2,6 @@
 Модуль по сбору новостей из RSS
 Модуль обеспечивает подключение rss-каналов
 Масштабирование за счет добавление новых ролей с указанием тематических каналов.
-
 """
 
 # TODO описать функционал
@@ -52,6 +51,10 @@ class ParseRSS():
         return feeds
 
     def dataset_to_csv(self, feeds):
+        """Формирует csv файл в формате Pandas с полями:
+        'news_for_role' - поле отражающее для какой роли были собраны новости
+        'title', 'tags', 'summary', 'description', 'link', 'published_dt' - атрибуты rss ленты
+        """
         df = pd.DataFrame.from_dict(feeds)
         df.to_csv(RSS_FILENAME, sep=";", encoding="utf-8-sig", header=True, index=True)
         return RSS_FILENAME
