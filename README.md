@@ -30,7 +30,7 @@
 https://github.com/MORETech4/Track_2_DATA
 
 Предлагается работать в одной ветке (чтобы не тратить время на слияние). Т.е. изначально каждый клонирует себе проект, и перед отправкой коммитов сначала делает pull к себе мержится с изменениями на сервере и только после этого делает push.
-Еще раз: edit->commit->pull->push/merge-push
+Еще раз: edit->commit->pull->merge->push
 
 Ссылка на описание как это:
 [Работа в одной ветке](https://docs.yandex.ru/docs/view?url=ya-disk-public%3A%2F%2FEs5Gmmhb72kHquqlH%2BGZHE4Atlvyzf3bmqRDSpBi988%3D&name=WorkFlow%20GithHub.pdf&nosw=1)
