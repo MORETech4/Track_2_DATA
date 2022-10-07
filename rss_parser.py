@@ -33,6 +33,7 @@ class ParseRSS():
         descriptions = []
         links = []
         published_dt = []
+        published_ts = []
 
         for role_name, rss_feeds in self.roles_rss_feeds.items():
             if self.is_log:
@@ -49,9 +50,11 @@ class ParseRSS():
                     descriptions.append(item_news['description'])
                     links.append(item_news['link'])
                     published_dt.append(parser.parse(item_news['published']))
+                    # Дату переводим в таймстеп
+                    published_ts.append(parser.parse(item_news['published']).timestamp())
+
         feeds = {"news_for_role": roles, "title": titles, "tags": tags, "summary": summary, "description": descriptions,
-                 "link": links,
-                 "published_dt": published_dt}
+                 "link": links, "published_dt": published_dt, "published_ts": published_ts}
         return feeds
 
     def dataset_to_csv(self, feeds):
@@ -65,7 +68,7 @@ class ParseRSS():
 
 
 if __name__ == "__main__":
-    roles_rss_feeds = {"booker": ['https://lenta.ru/rss/', 'http://www.consultant.ru/law/rss/'],
+    roles_rss_feeds = {"booker": ['http://www.consultant.ru/rss/db.xml', 'http://www.consultant.ru/law/rss/'],
                        "owner": ['https://www.kommersant.ru/RSS/news.xml', 'https://www.vesti.ru/vesti.rss']}
     rss = ParseRSS(roles_rss_feeds)
     feeds = rss.parse_feeds()
