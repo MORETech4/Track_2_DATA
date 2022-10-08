@@ -26,13 +26,17 @@ class PredictNews():
         self.tokenizer = self.load_tokenizer(config['TOKENIZER_FILENAME'])
 
     def predict_from_df(self, df, columns):
-        text_predict_dict = []
+        predicts = []
         rows = df[columns].values
         for row in rows:
-            predict = self.predict(row[0])
-            predict = self.calc_mean_predict(predict)
-            text_predict_dict.append([row[0], predict])
-        return self.sort_predicts(text_predict_dict)
+            predicts.append(self.calc_predict(row[0]))
+        df["predict"] = np.array(predicts)
+        return df[['title', 'summary', 'description', 'tags', 'link', 'published_dt', 'predict']]
+
+    def calc_predict(self, text):
+        predict = self.predict(text)
+        predict = self.calc_mean_predict(predict)
+        return predict
 
     def sort_predicts(self, text_predict_dict):
         return sorted(text_predict_dict, key=lambda x: x[1], reverse=True)
@@ -104,7 +108,8 @@ if __name__ == "__main__":
 
     # Прогнозирование
     predict_model = PredictNews()
-    text_predict_dict = predict_model.predict_from_df(news_df_preproc, columns=["description_preproc"])
-    print(*text_predict_dict, sep="\n")
+    news_predict_df = predict_model.predict_from_df(news_df_preproc, columns=["description_preproc"])
+    print(news_predict_df)
     # Подлюкчать PredictNews во вне
+    # Прогнозирование
     # from predict_model import PredictNews
