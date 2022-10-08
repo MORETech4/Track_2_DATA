@@ -27,19 +27,27 @@ class PredictNews():
 
     def predict_from_df(self, df, columns):
         predicts = []
+        count_similar_words = []
         rows = df[columns].values
         for row in rows:
             predicts.append(self.calc_predict(row[0]))
+            count_similar_words.append(self.calc_similar_words(row[0]))
         df["predict"] = np.array(predicts)
-        return df[['title', 'summary', 'description', 'tags', 'link', 'published_dt', 'predict']]
+        df["count_similar_words"] = np.array(count_similar_words)
+        return df[['title', 'summary', 'description', 'tags', 'link', 'published_dt', 'predict',
+                   "count_similar_words"]].sort_values(by=['predict', 'count_similar_words'], ascending=False)
 
     def calc_predict(self, text):
         predict = self.predict(text)
         predict = self.calc_mean_predict(predict)
         return predict
 
-    def sort_predicts(self, text_predict_dict):
-        return sorted(text_predict_dict, key=lambda x: x[1], reverse=True)
+    # TODO сделать получение наименоние для какой роли вызвается
+    #  поиск новостей role, эта информция уже есть в df
+    def calc_similar_words(self, text):
+        role_keywords = config['ROLES_FEEDS']["booker"]["info"]
+        role_keywords = [x.lower() for x in role_keywords]
+        return sum([text.count(x) for x in role_keywords])
 
     def calc_mean_predict(self, predict):
         return np.mean(predict, axis=0)[1]
@@ -78,7 +86,6 @@ class PredictNews():
     # функция принимает последовательность индексов, размер окна, шаг окна
     def createTestMultiClasses(self, wordIndexes, xLen, step):
         # Создаём тестовую выборку из индексов
-        nClasses = len(wordIndexes)  # Задаем количество классов
         x_test_01 = []  # Здесь будет список из всех классов, каждый размером "кол-во окон в тексте * 20000 (при maxWordsCount=20000)"
         x_test = []  # Здесь будет список массивов, каждый размером "кол-во окон в тексте * длину окна"(6 по 420*1000)
         for wI in wordIndexes:  # Для каждого тестового текста из последовательности индексов
@@ -109,7 +116,7 @@ if __name__ == "__main__":
     # Прогнозирование
     predict_model = PredictNews()
     news_predict_df = predict_model.predict_from_df(news_df_preproc, columns=["description_preproc"])
-    print(news_predict_df)
+    print(news_predict_df.sort_values(by=['predict', 'count_similar_words'], ascending=False))
     # Подлюкчать PredictNews во вне
     # Прогнозирование
     # from predict_model import PredictNews
