@@ -14,20 +14,21 @@ import feedparser
 import pandas as pd
 from dateutil import parser
 from datetime import datetime, timezone
+import json
 
-
-PATH_PROJECT = ""
-DATASET_PATH = PATH_PROJECT + "dataset/"
-RSS_FILENAME = DATASET_PATH + "rss_dataset.csv"
+# Для конфигурации используется json
+with open('config.json', 'r') as f:
+    config = json.load(f)
 
 
 class ParseRSS():
     # заголовок
-    def __init__(self, roles_rss_feeds, is_log=True):
+    def __init__(self, roles_rss_feeds, is_log=False):
         self.roles_rss_feeds = roles_rss_feeds
         self.is_log = is_log
 
     def parse_feeds(self):
+        # Парсим ленты
         roles = []
         titles = []
         tags = []
@@ -40,7 +41,7 @@ class ParseRSS():
         for role_name, rss_feeds in self.roles_rss_feeds.items():
             if self.is_log:
                 print(role_name)
-            for url in rss_feeds:
+            for url in self.roles_rss_feeds[role_name]["feeds"]:
                 if self.is_log:
                     print(url)
                 lenta = feedparser.parse(url)
@@ -77,29 +78,25 @@ class ParseRSS():
                  "link": links, "published_dt": published_dt, "published_ts": published_ts}
         return feeds
 
+    def get_feeds(self):
+        return feeds
+
+    def get_dataframe_feeds(self):
+        df = pd.DataFrame.from_dict(feeds)
+        return df
+
     def dataset_to_csv(self, feeds):
         """Формирует csv файл в формате Pandas с полями:
         'news_for_role' - поле отражающее для какой роли были собраны новости
         'title', 'tags', 'summary', 'description', 'link', 'published_dt' - атрибуты rss ленты
         """
         df = pd.DataFrame.from_dict(feeds)
-        df.to_csv(RSS_FILENAME, sep=";", encoding="utf-8-sig", header=True, index=True, index_label="id")
-        return RSS_FILENAME
+        df.to_csv(config["RSS_FILENAME"], sep=";", encoding="utf-8-sig", header=True, index=True, index_label="id")
+        return config["RSS_FILENAME"]
 
 
 if __name__ == "__main__":
-    roles_rss_feeds = {
-                        # "booker": ['http://www.consultant.ru/rss/db.xml', 'http://www.consultant.ru/law/rss/'],
-                        "booker": [
-                            'http://www.consultant.ru/rss/db.xml',
-                            'http://www.consultant.ru/rss/hotdocs.xml', # нет tags summary summary_detail
-                            "https://glavkniga.ru/rss/yandexnews",
-                            "https://minjust.gov.ru/ru/subscription/rss/events/",
-                        ],
-                       "owner": [
-                            "https://minjust.gov.ru/ru/subscription/rss/events/"
-                            'https://www.kommersant.ru/RSS/news.xml', 'https://www.vesti.ru/vesti.rss']
-    }
-    rss = ParseRSS(roles_rss_feeds)
+    rss = ParseRSS(config['ROLES_FEEDS'], is_log=True)
     feeds = rss.parse_feeds()
     rss.dataset_to_csv(feeds)
+    print(rss.get_dataframe_feeds())

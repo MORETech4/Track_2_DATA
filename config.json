@@ -35,9 +35,9 @@
             ]
         }
     },
-    "PATH_PROJECT": ".",
-    "DATASET_PATH": ".dataset/",
-    "RSS_FILENAME": ".dataset/rss_dataset.csv",
-    "LENTA_DATASET_PATH": ".dataset/src_rss_archive",
-    "LENTA_ARCHIVE_RSS": ".dataset/src_rss_archive/clear_mini_lenta_ru_news.csv"
+    "PATH_PROJECT": "",
+    "DATASET_PATH": "dataset/",
+    "RSS_FILENAME": "dataset/rss_dataset.csv",
+    "LENTA_DATASET_PATH": "dataset/src_rss_archive",
+    "LENTA_ARCHIVE_RSS": "dataset/src_rss_archive/clear_mini_lenta_ru_news.csv"
 }

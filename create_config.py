@@ -26,7 +26,7 @@ config['ROLES_FEEDS'] = \
     }
 
 # Пути
-config['PATH_PROJECT'] = '.'
+config['PATH_PROJECT'] = ''
 config['DATASET_PATH'] = config['PATH_PROJECT'] + "dataset/"
 config['RSS_FILENAME'] = config['DATASET_PATH'] + "rss_dataset.csv"
 config['LENTA_DATASET_PATH'] = config['DATASET_PATH'] + "src_rss_archive"  # архивные данные по ленте
