@@ -7,3 +7,6 @@ nltk
 pymorphy2
 re
 yaml
+pickle
+json
+sklearn
