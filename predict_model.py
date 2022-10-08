@@ -34,6 +34,7 @@ class PredictNews():
             count_similar_words.append(self.calc_similar_words(row[0]))
         df["predict"] = np.array(predicts)
         df["count_similar_words"] = np.array(count_similar_words)
+        df = df.drop_duplicates(subset=['title', "summary"])
         return df[['title', 'summary', 'description', 'tags', 'link', 'published_dt', 'predict',
                    "count_similar_words"]].sort_values(by=['predict', 'count_similar_words'], ascending=False)
 
