@@ -38,15 +38,41 @@ class TextProcessing():
     - стемминг - обрезаем окончания (опционально)
     """
 
-    def __init__(self, df):
-        self.df = df
-        self.preprocessing_text(column="description")
-        self.preprocessing_text(column="title")
-        self.preprocessing_text(column="summary")
+    def __init__(self):
+        pass
 
-    def preprocessing_text(self, column, enable_stemming=False):
+    def preprocessing_text(self, text):
         # приводим к нижнему регистру
-        self.df[f"{column}_preproc"] = self.lower_text(news_df[column])
+        text = text.lower()
+        # убираем стоп слова
+        text = " ".join([w for w in re.findall(r"\w+", text) if w not in rus_stopwords])
+        # лемматизация
+        text = " ".join([morph.parse(w)[0].normal_form for w in text.split(' ')])
+        # стемминг
+        text = " ".join([snowball.stem(w) for w in text.split(' ')])
+        return text
+
+    def preprocessing_df(self, df, enable_stemming=False):
+        self.df = df
+        # Заполняем пустые значениям описания заголовком статьи
+        self.fillna_columns()
+        self.preprocessing_series(column="description", enable_stemming=enable_stemming)
+        self.preprocessing_series(column="title", enable_stemming=enable_stemming)
+        self.preprocessing_series(column="summary", enable_stemming=enable_stemming)
+        return self.df
+
+    def fillna_columns(self):
+        df = self.df
+        # Для случаев когда summary пустой заполняем title
+        df["summary"] = df["summary"].fillna(df["title"])
+        # Для случаев когда и title пустой использеум description
+        df["summary"] = df["summary"].fillna(df["description"])
+        df["description"] = df["description"].fillna(df["summary"])
+        df["title"] = df["title"].fillna(df["summary"])
+
+    def preprocessing_series(self, column, enable_stemming=False):
+        # приводим к нижнему регистру
+        self.df[f"{column}_preproc"] = self.lower_text(self.df[column])
         # убираем стоп слова
         self.df[f"{column}_preproc"] = self.stopwords(self.df[f"{column}_preproc"])
         # лемматизация
@@ -60,7 +86,6 @@ class TextProcessing():
         return series.str.lower()
 
     def stopwords(self, series):
-        rus_stopwords
         lemma_series = series.apply(lambda x: " ".join([w for w in re.findall(r"\w+", x) if w not in rus_stopwords]))
         return lemma_series
 
@@ -93,8 +118,8 @@ class TextProcessing():
 if __name__ == "__main__":
     news_df = pd.read_csv(RSS_FILENAME, sep=";", index_col=["id"])
     # ПредОбработка текста
-    txt_proc = TextProcessing(news_df)
-    news_df = txt_proc.df
+    txt_proc = TextProcessing()
+    news_df = txt_proc.preprocessing_df(news_df)
 
     news_df.to_csv(SIMPLE_FEATURES_FILENAME, sep=";", encoding="utf-8-sig", header=True, index=True, index_label="id")
 
