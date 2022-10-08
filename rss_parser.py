@@ -26,6 +26,7 @@ class ParseRSS():
     def __init__(self, roles_rss_feeds, is_log=False):
         self.roles_rss_feeds = roles_rss_feeds
         self.is_log = is_log
+        self.feeds = None
 
     def parse_feeds(self):
         # Парсим ленты
@@ -48,7 +49,6 @@ class ParseRSS():
                 for item_news in lenta['items']:
                     roles.append(role_name)
                     titles.append(item_news['title'])
-                    print(item_news.keys())
                     if tags in list(item_news.keys()):
                         tags.append(" ".join([x["term"] for x in item_news['tags']]))
                     else:
@@ -74,15 +74,16 @@ class ParseRSS():
                     # Дату переводим в таймстеп
                     published_ts.append(dt_publish.timestamp())
 
-        feeds = {"news_for_role": roles, "title": titles, "tags": tags, "summary": summary, "description": descriptions,
-                 "link": links, "published_dt": published_dt, "published_ts": published_ts}
-        return feeds
+        self.feeds = {"news_for_role": roles, "title": titles, "tags": tags, "summary": summary,
+                      "description": descriptions,
+                      "link": links, "published_dt": published_dt, "published_ts": published_ts}
+        return self.feeds
 
     def get_feeds(self):
-        return feeds
+        return self.feeds
 
     def get_dataframe_feeds(self):
-        df = pd.DataFrame.from_dict(feeds)
+        df = pd.DataFrame.from_dict(self.feeds)
         return df
 
     def dataset_to_csv(self, feeds):

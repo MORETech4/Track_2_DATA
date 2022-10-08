@@ -2,9 +2,8 @@
     "ROLES_FEEDS": {
         "booker": {
             "feeds": [
-                "http://www.consultant.ru/rss/db.xml",
-                "http://www.consultant.ru/rss/hotdocs.xml",
                 "https://glavkniga.ru/rss/yandexnews",
+                "https://www.business-gazeta.ru/rss.xmlhttps://www.kommersant.ru/RSS/news.xml",
                 "https://minjust.gov.ru/ru/subscription/rss/events/"
             ],
             "info": [
@@ -37,7 +36,13 @@
     },
     "PATH_PROJECT": "",
     "DATASET_PATH": "dataset/",
+    "MODELS_PATH": "models/",
+    "MODEL_FILENAME": "models/model_more_tech_4.h5",
+    "TOKENIZER_FILENAME": "models/tokenizer_more_tech_4.pickle",
     "RSS_FILENAME": "dataset/rss_dataset.csv",
     "LENTA_DATASET_PATH": "dataset/src_rss_archive/",
-    "LENTA_ARCHIVE_RSS": "dataset/src_rss_archive/clear_mini_lenta_ru_news.csv"
+    "LENTA_ARCHIVE_RSS": "dataset/src_rss_archive/clear_mini_lenta_ru_news.csv",
+    "MAX_COUNT_WORDS": 30000,
+    "SIZE_WINDOW": 40,
+    "STEP_WINDOW": 30
 }
