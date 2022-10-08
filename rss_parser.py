@@ -13,6 +13,8 @@
 import feedparser
 import pandas as pd
 from dateutil import parser
+from datetime import datetime, timezone
+
 
 PATH_PROJECT = ""
 DATASET_PATH = PATH_PROJECT + "dataset/"
@@ -45,13 +47,31 @@ class ParseRSS():
                 for item_news in lenta['items']:
                     roles.append(role_name)
                     titles.append(item_news['title'])
-                    tags.append(" ".join([x["term"] for x in item_news['tags']]))
-                    summary.append(item_news['summary'])
-                    descriptions.append(item_news['description'])
+                    print(item_news.keys())
+                    if tags in list(item_news.keys()):
+                        tags.append(" ".join([x["term"] for x in item_news['tags']]))
+                    else:
+                        tags.append("")
+                    if 'summary' in item_news:
+                        summary.append(item_news['summary'])
+                    else:
+                        summary.append(item_news['title'])
+                    if 'description' in item_news:
+                        descriptions.append(item_news['description'])
+                    else:
+                        if 'summary' in item_news:
+                            descriptions.append(item_news['summary'])
+                        else:
+                            descriptions.append(item_news['title'])
                     links.append(item_news['link'])
-                    published_dt.append(parser.parse(item_news['published']))
+                    if 'published' in item_news:
+                        dt_publish = parser.parse(item_news['published'])
+                    else:
+                        dt_publish = datetime.now(timezone.utc).replace(microsecond=0)
+                    # добавляем дату публикации
+                    published_dt.append(dt_publish)
                     # Дату переводим в таймстеп
-                    published_ts.append(parser.parse(item_news['published']).timestamp())
+                    published_ts.append(dt_publish.timestamp())
 
         feeds = {"news_for_role": roles, "title": titles, "tags": tags, "summary": summary, "description": descriptions,
                  "link": links, "published_dt": published_dt, "published_ts": published_ts}
@@ -68,8 +88,18 @@ class ParseRSS():
 
 
 if __name__ == "__main__":
-    roles_rss_feeds = {"booker": ['http://www.consultant.ru/rss/db.xml', 'http://www.consultant.ru/law/rss/'],
-                       "owner": ['https://www.kommersant.ru/RSS/news.xml', 'https://www.vesti.ru/vesti.rss']}
+    roles_rss_feeds = {
+                        # "booker": ['http://www.consultant.ru/rss/db.xml', 'http://www.consultant.ru/law/rss/'],
+                        "booker": [
+                            'http://www.consultant.ru/rss/db.xml',
+                            'http://www.consultant.ru/rss/hotdocs.xml', # нет tags summary summary_detail
+                            "https://glavkniga.ru/rss/yandexnews",
+                            "https://minjust.gov.ru/ru/subscription/rss/events/",
+                        ],
+                       "owner": [
+                            "https://minjust.gov.ru/ru/subscription/rss/events/"
+                            'https://www.kommersant.ru/RSS/news.xml', 'https://www.vesti.ru/vesti.rss']
+    }
     rss = ParseRSS(roles_rss_feeds)
     feeds = rss.parse_feeds()
     rss.dataset_to_csv(feeds)
