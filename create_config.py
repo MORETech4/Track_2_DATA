@@ -29,9 +29,8 @@ config['ROLES_FEEDS'] = \
 config['PATH_PROJECT'] = ''
 config['DATASET_PATH'] = config['PATH_PROJECT'] + "dataset/"
 config['RSS_FILENAME'] = config['DATASET_PATH'] + "rss_dataset.csv"
-config['LENTA_DATASET_PATH'] = config['DATASET_PATH'] + "src_rss_archive"  # архивные данные по ленте
-config['LENTA_ARCHIVE_RSS'] = config[
-                                  'DATASET_PATH'] + "src_rss_archive/clear_mini_lenta_ru_news.csv"  # архивные данные по ленте
+config['LENTA_DATASET_PATH'] = config['DATASET_PATH'] + "src_rss_archive/"  # архивные данные по ленте
+config['LENTA_ARCHIVE_RSS'] = config['LENTA_DATASET_PATH'] + "clear_mini_lenta_ru_news.csv"  # архивные данные по ленте
 
 with open('config.json', 'w') as f:
     json.dump(config, f, indent=4)
