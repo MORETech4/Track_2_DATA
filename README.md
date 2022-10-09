@@ -26,7 +26,7 @@
 6. Публикация релевантных новостей в телеграмм-канале [https://t.me/boohnews]()
 7. Расчет новостных трендов 
 
-![MORE Tech 4 0 Hackathon drawio](https://user-images.githubusercontent.com/115187419/194736419-72eccb64-c402-49eb-b842-e901167eb742.png)
+![MORE Tech 4 0 Hackathon drawio](https://user-images.githubusercontent.com/115187419/194737393-fb352f22-48fc-4f8e-90ed-b9590b1a51b1.png)
 
 ###Структура проекта
 ####Файлы конфигурации 
