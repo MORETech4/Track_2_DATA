@@ -1,11 +1,18 @@
-"""Модуль по предварительной обработке текста rss лент"""
+"""Модуль по предварительной обработке текста rss лент
+Включая следующие виды обрабатки:
+- заполнение пропущенных данных
+- приведение текста к нижнему регистру
+- лемматизация - боримся с окончаниями
+- убираем стоп-слова
+- стемминг - обрезаем окончания (опционально)
+"""
 import pandas as pd
 import re
 import nltk
 from nltk.stem import SnowballStemmer
 from nltk.corpus import stopwords
-# nltk.download('stopwords')
-# nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('punkt')
 import pymorphy2
 
 
