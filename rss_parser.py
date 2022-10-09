@@ -54,16 +54,16 @@ class ParseRSS():
                     else:
                         tags.append("")
                     if 'summary' in item_news and item_news['summary'] != "":
-                        summary.append(item_news['summary'])
+                        summary.append(item_news['summary'].strip())
                     else:
-                        summary.append(item_news['title'])
+                        summary.append(item_news['title'].strip())
                     if 'description' in item_news and item_news['description'] != "":
-                        descriptions.append(item_news['description'])
+                        descriptions.append(item_news['description'].strip())
                     else:
                         if 'summary' in item_news and item_news['summary'] != "":
-                            descriptions.append(item_news['summary'])
+                            descriptions.append(item_news['summary'].strip())
                         else:
-                            descriptions.append(item_news['title'])
+                            descriptions.append(item_news['title'].strip())
                     links.append(item_news['link'])
                     if 'published' in item_news and item_news['published'] != "":
                         dt_publish = parser.parse(item_news['published'])
