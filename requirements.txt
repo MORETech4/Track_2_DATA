@@ -14,3 +14,5 @@ difflib
 urllib
 spacy
 dateutil
+fastapi
+uuid
