@@ -10,3 +10,7 @@ yaml
 pickle
 json
 sklearn
+difflib
+urllib
+spacy
+dateutil
